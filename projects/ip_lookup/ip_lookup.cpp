@@ -249,7 +249,7 @@ int main(int argc, char *argv[])
         std::vector<helib::Ctxt> rotated_masks(ea.size(), mask_entry);
         for (int i = 1; i < rotated_masks.size(); i++)
         ea.rotate(rotated_masks[i], i);             // Rotate each of the masks
-        totalProduct(mask_entry, rotated_masks);      // Multiply each of the masks
+        totalProduct(mask_entry, rotated_masks);      // Multiply each of the masks 
         for (const auto &encrypted_log_item : encrypted_log_line)
         {
             helib::Ctxt mask_entry2 = mask_entry; 
@@ -263,9 +263,17 @@ int main(int argc, char *argv[])
     // Aggregate the results into a single ciphertext
     // Note: This code is for educational purposes and thus we try to refrain
     // from using the STL and do not use std::accumulate
-    helib::Ctxt value = mask[0][0];
-    for (int i = 1; i < mask.size(); i++)
+    helib::Ctxt value = mask[0][DATA_TO_SUM_INDEX];
+    for (int i = 1; i < mask.size(); i++) {
         value += mask[i][DATA_TO_SUM_INDEX];
+        helib::Ptxt<helib::BGV> plaintext_result1(context);
+        secret_key.Decrypt(plaintext_result1, mask[i][DATA_TO_SUM_INDEX]);
+
+        helib::Ptxt<helib::BGV> plaintext_result2(context);
+        secret_key.Decrypt(plaintext_result2, value);
+
+        std::cout << plaintext_result1 << " " << plaintext_result2 << std::endl;
+    }
 
     HELIB_NTIMER_STOP(timer_QuerySearch);
 

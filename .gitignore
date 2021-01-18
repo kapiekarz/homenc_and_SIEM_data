@@ -32,3 +32,6 @@
 *.app
 
 data/
+
+projects/ip_lookup/ip_lookup
+projects/ip_lookup/CMakeFiles/

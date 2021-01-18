@@ -1,3 +1,0 @@
-/home/kpiekarz/repos/homenc_and_SIEM_data/projects/ip_lookup/CMakeFiles/rebuild_cache.dir
-/home/kpiekarz/repos/homenc_and_SIEM_data/projects/ip_lookup/CMakeFiles/ip_lookup.dir
-/home/kpiekarz/repos/homenc_and_SIEM_data/projects/ip_lookup/CMakeFiles/edit_cache.dir
