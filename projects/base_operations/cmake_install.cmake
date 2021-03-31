@@ -1,4 +1,4 @@
-# Install script for directory: /home/kpiekarz/repos/homenc_and_SIEM_data/projects/ip_lookup
+# Install script for directory: /home/kpiekarz/repos/homenc_and_SIEM_data/projects/base_operations
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/kpiekarz/repos/homenc_and_SIEM_data/projects/ip_lookup/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/kpiekarz/repos/homenc_and_SIEM_data/projects/base_operations/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

@@ -3,9 +3,9 @@
 #include "../headers/helpers.h"
 
 // Utility function to read CSV data from file
-std::vector<std::vector<data_entry>> read_csv(std::string filename)
+std::vector<std::vector<struct data_entry>> read_csv(std::string filename)
 {
-    std::vector<std::vector<int>> dataset;
+    std::vector<std::vector<struct data_entry>> dataset;
     std::ifstream data_file(filename);
 
     if (!data_file.is_open())
@@ -28,10 +28,10 @@ std::vector<std::vector<data_entry>> read_csv(std::string filename)
             int i = 0;
             while (getline(ss, entry, ','))
             {
-                data_entry cell;
+                struct data_entry cell;
                 if(column_type[i] == 'i') {
                     cell.integrer_entry = std::stoi(entry);
-                    call.type = 'i';
+                    cell.type = 'i';
                 } 
                 if(column_type[i] == 's') { 
                     cell.text_entry = entry;

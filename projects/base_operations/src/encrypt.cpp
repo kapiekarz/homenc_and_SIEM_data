@@ -7,7 +7,7 @@
 #include "../headers/helpers.h"
 #include "../headers/encrypt.h"
 
-encrypted_data encrypt(encrypt_parameters params, filename)
+encrypted_data encrypt(encrypt_parameters params, std::string filename)
 {
     // set NTL Thread pool size
     if (params.nthreads > 1)
@@ -20,6 +20,7 @@ encrypted_data encrypt(encrypt_parameters params, filename)
     const helib::PubKey &public_key = secret_key;
     const helib::EncryptedArray &ea = *(context.ea);
 
+    std::cout << "\t" << "reading file" << std::endl;
     std::vector<std::vector<data_entry>> logs;
     try
     {
@@ -32,6 +33,9 @@ encrypted_data encrypt(encrypt_parameters params, filename)
         exit(1);
     }
 
+    int logs_size = logs.size();
+
+    std::cout << "\t" << "creating plaintext" << std::endl;
     std::vector<std::vector<helib::Ptxt<helib::BGV>>> logs_ptxt;
     for (const auto &log_line : logs)
     {
@@ -43,13 +47,14 @@ encrypted_data encrypt(encrypt_parameters params, filename)
                 item[0] = log_item.integrer_entry;
             } 
             if(log_item.type == 's') { 
-                item[0] = log_item.text_entry;
+                item[0] = std::stoi(log_item.text_entry);
             }
             logs_line_ptxt.emplace_back(std::move(item));
         }
         logs_ptxt.emplace_back(logs_line_ptxt);
     }
 
+    std::cout << "\t" << "encrypting plaintext" << std::endl;
     std::vector<std::vector<helib::Ctxt>> encrypted_logs;
     for (const auto &log_line : logs_ptxt)
     {
@@ -64,11 +69,14 @@ encrypted_data encrypt(encrypt_parameters params, filename)
         encrypted_logs.emplace_back(encrypted_log_line);
     }
 
-    encrypted_data ed;
-    ed.data = encrypted_logs;
-    ed.ctx = context;
-    ed.pub_key = public_key;
-    ed.sec_key = secret_key;
+    struct encrypted_data ed = {
+        &context,
+        &public_key,
+        &secret_key,
+        &encrypted_logs,
+        NULL,
+        &logs_size
+    };
 
     return ed;
 }

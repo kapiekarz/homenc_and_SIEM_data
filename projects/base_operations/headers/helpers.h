@@ -1,3 +1,6 @@
+#ifndef HELPERS_H_
+#define HELPERS_H_
+
 #include <iostream>
 #include <helib/helib.h>
 
@@ -24,11 +27,15 @@ struct encrypt_parameters {
 };
 
 struct encrypted_data {
-    helib::Context ctx;
-    helib::PubKey pub_key;
-    helib::SecKey sec_key;
-    std::vector<std::vector<helib::Ctxt>> data;
+    helib::Context* context;
+    const helib::PubKey* pub_key;
+    helib::SecKey* sec_key;
+    std::vector<std::vector<helib::Ctxt>>* data;
+    helib::Ctxt* enc_result;
+    int* logs_size;
 };
 
 // Utility function to read CSV data from file
 std::vector<std::vector<data_entry>> read_csv(std::string filename);
+
+#endif

@@ -7,10 +7,15 @@
 #include "../headers/helpers.h"
 #include "../headers/decrypt.h"
 
-string decrypt(encrypted_data enc_data)
+std::string decrypt(encrypted_data enc_data)
 {
-    helib::Ptxt<helib::BGV> plaintext_result(enc_data.context);
-    enc_data.sec_key.Decrypt(plaintext_result, ed.data);
+    helib::Ptxt<helib::BGV> plaintext_result(*(enc_data.context));
+    (*(enc_data.sec_key)).Decrypt(plaintext_result, *(enc_data.enc_result));
 
-    return plaintext_result;
+    //Convert from ASCII to a string
+    std::string string_result;
+    for (long i = 0; i < plaintext_result.size(); ++i)
+        string_result.push_back(static_cast<long>(plaintext_result[i]));
+
+    return string_result;
 }
