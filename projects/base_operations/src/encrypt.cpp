@@ -1,8 +1,5 @@
 #include <iostream>
 #include <helib/helib.h>
-#include <helib/EncryptedArray.h>
-#include <helib/ArgMap.h>
-
 
 #include "../headers/helpers.h"
 #include "../headers/encrypt.h"

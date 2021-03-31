@@ -1,4 +1,6 @@
 #include <iostream>
+#include <helib/helib.h>
+#include <helib/EncryptedArray.h>
 #include <NTL/BasicThreadPool.h>
 #include "../headers/helpers.h"
 #include "../headers/encrypt.h"
@@ -28,9 +30,8 @@ int main(int argc, char *argv[])
 
     std::cout << "Encrypting..." << std::endl;
     struct encrypted_data data = encrypt(ctx, "./data/short-test.csv");
-    // std::cout << "\t" << *(data.context) << std::endl;
     std::cout << "Adding..." << std::endl;
-    helib::Ctxt result = add(ctx, params, data, 0, 1, "2");
+    helib::Ctxt result = add(ctx, params, data, 0, 1, "0");
     std::cout << "Decrypting..." << std::endl;
     std::string s_result = decrypt(ctx, result);
 
