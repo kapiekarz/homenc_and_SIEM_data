@@ -5,14 +5,14 @@
 #include <helib/ArgMap.h>
 #include <NTL/BasicThreadPool.h>
 
-#define IP_INFORMATION_INDEX 8
-#define DATA_TO_SUM_INDEX 2
-#define FILE_PATH "./short-test.csv"
+#define IP_INFORMATION_INDEX 1
+#define DATA_TO_SUM_INDEX 0
+#define FILE_PATH "./short-test2.csv"
 
 // Utility function to read <K,V> CSV data from file
-std::vector<std::vector<std::string>> read_csv(std::string filename)
+std::vector<std::vector<int>> read_csv(std::string filename)
 {
-    std::vector<std::vector<std::string>> dataset;
+    std::vector<std::vector<int>> dataset;
     std::ifstream data_file(filename);
 
     if (!data_file.is_open())
@@ -20,7 +20,7 @@ std::vector<std::vector<std::string>> read_csv(std::string filename)
             "Error: This example failed trying to open the data file: " + filename +
             "\n           Please check this file exists and try again.");
 
-    std::vector<std::string> row;
+    std::vector<int> row;
     std::string line, entry, temp;
 
     if (data_file.good())
@@ -32,7 +32,7 @@ std::vector<std::vector<std::string>> read_csv(std::string filename)
             std::stringstream ss(line);
             while (getline(ss, entry, ','))
             {
-                row.push_back(entry);
+                row.push_back(std::stoi(entry));
             }
             // Add key value pairs to dataset
             dataset.push_back(row);
@@ -138,7 +138,7 @@ int main(int argc, char *argv[])
     std::cout << "\nNumber of slots: " << nslots << std::endl;
 
     /************ Read in the database ************/
-    std::vector<std::vector<std::string>> logs;
+    std::vector<std::vector<int>> logs;
     try
     {
         logs = read_csv(db_filename);
@@ -166,9 +166,10 @@ int main(int argc, char *argv[])
         for (const auto &log_item : log_line)
         { 
             helib::Ptxt<helib::BGV> item(context);
-            for (long i = 0; i < log_item.size(); ++i){
-                item.at(i) = log_item[i];
-            }
+            // for (long i = 0; i < log_item.size(); ++i){
+            //     item.at(i) = log_item[i];
+            // }
+            item[0] = log_item;
             logs_line_ptxt.emplace_back(std::move(item));
         }
         logs_ptxt.emplace_back(logs_line_ptxt);
@@ -224,8 +225,7 @@ int main(int argc, char *argv[])
     HELIB_NTIMER_START(timer_EncryptQuery);
     // Convert query to a numerical vector
     helib::Ptxt<helib::BGV> query_ptxt(context);
-    for (long i = 0; i < query_string.size(); ++i)
-        query_ptxt[i] = query_string[i];
+    query_ptxt[0] = stoi(query_string);
 
     // Encrypt the query
     helib::Ctxt query(public_key);
@@ -249,7 +249,7 @@ int main(int argc, char *argv[])
         std::vector<helib::Ctxt> rotated_masks(ea.size(), mask_entry);
         for (int i = 1; i < rotated_masks.size(); i++)
         ea.rotate(rotated_masks[i], i);             // Rotate each of the masks
-        totalProduct(mask_entry, rotated_masks);      // Multiply each of the masks
+        totalProduct(mask_entry, rotated_masks);      // Multiply each of the masks 
         for (const auto &encrypted_log_item : encrypted_log_line)
         {
             helib::Ctxt mask_entry2 = mask_entry; 
@@ -263,9 +263,17 @@ int main(int argc, char *argv[])
     // Aggregate the results into a single ciphertext
     // Note: This code is for educational purposes and thus we try to refrain
     // from using the STL and do not use std::accumulate
-    helib::Ctxt value = mask[0][0];
-    for (int i = 1; i < mask.size(); i++)
+    helib::Ctxt value = mask[0][DATA_TO_SUM_INDEX];
+    for (int i = 1; i < mask.size(); i++) {
         value += mask[i][DATA_TO_SUM_INDEX];
+        helib::Ptxt<helib::BGV> plaintext_result1(context);
+        secret_key.Decrypt(plaintext_result1, mask[i][DATA_TO_SUM_INDEX]);
+
+        helib::Ptxt<helib::BGV> plaintext_result2(context);
+        secret_key.Decrypt(plaintext_result2, value);
+
+        std::cout << plaintext_result1 << " " << plaintext_result2 << std::endl;
+    }
 
     HELIB_NTIMER_STOP(timer_QuerySearch);
 
@@ -277,9 +285,9 @@ int main(int argc, char *argv[])
     HELIB_NTIMER_STOP(timer_DecryptQueryResult);
 
     // Convert from ASCII to a string
-    std::string string_result;
-    for (long i = 0; i < plaintext_result.size(); ++i)
-        string_result.push_back(static_cast<long>(plaintext_result[i]));
+    // std::string string_result;
+    // for (long i = 0; i < plaintext_result.size(); ++i)
+    //     string_result.push_back(static_cast<long>(plaintext_result[i]));
 
     HELIB_NTIMER_STOP(timer_TotalQuery);
 
@@ -292,11 +300,11 @@ int main(int argc, char *argv[])
         std::cout << std::endl;
     }
 
-    if (string_result.at(0) == 0x00)
-    {
-        string_result = "IP not in the database.";
-    }
-    std::cout << "\nQuery result: " << string_result << std::endl;
+    // if (string_result.at(0) == 0x00)
+    // {
+    //     string_result = "IP not in the database.";
+    // }
+    std::cout << "\nQuery result: " << plaintext_result << std::endl;
     helib::printNamedTimer(std::cout, "timer_TotalQuery");
 
     return 0;

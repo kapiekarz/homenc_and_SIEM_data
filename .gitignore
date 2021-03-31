@@ -30,3 +30,12 @@
 *.exe
 *.out
 *.app
+
+data/
+
+projects/ip_lookup/ip_lookup
+
+Makefile
+CMakeCache.txt
+helib.log
+CMakeFiles/
