@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
     std::cout << "Adding..." << std::endl;
     helib::Ctxt result = add(ctx, params, data, 0, 1, "0");
     std::cout << "Decrypting..." << std::endl;
-    std::string s_result = decrypt(ctx, result);
+    helib::Ptxt<helib::BGV>  decrypted_result = decrypt(ctx, result);
 
-    std::cout << s_result << std::endl;
+    std::cout << decrypted_result << std::endl;
 }
