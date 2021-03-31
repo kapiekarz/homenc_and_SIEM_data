@@ -1,4 +1,4 @@
 #include <iostream>
 #include "helpers.h"
 
-std::string decrypt(struct encrypted_data* enc_data);
+std::string decrypt(struct helib_context ctx, helib::Ctxt encrypted_result);

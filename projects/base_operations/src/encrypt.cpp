@@ -2,24 +2,13 @@
 #include <helib/helib.h>
 #include <helib/EncryptedArray.h>
 #include <helib/ArgMap.h>
-#include <NTL/BasicThreadPool.h>
+
 
 #include "../headers/helpers.h"
 #include "../headers/encrypt.h"
 
-struct encrypted_data encrypt(encrypt_parameters params, std::string filename)
+struct encrypted_data encrypt(struct helib_context ctx, std::string filename)
 {
-    // set NTL Thread pool size
-    if (params.nthreads > 1)
-        NTL::SetNumThreads(params.nthreads);
-
-    helib::Context context(params.m, params.p, params.r);
-    helib::buildModChain(context, params.bits, params.c);
-    helib::SecKey secret_key = helib::SecKey(context);
-    helib::addSome1DMatrices(secret_key);
-    const helib::PubKey &public_key = secret_key;
-    const helib::EncryptedArray &ea = *(context.ea);
-
     std::cout << "\t" << "reading file" << std::endl;
     std::vector<std::vector<data_entry>> logs;
     try
@@ -42,7 +31,7 @@ struct encrypted_data encrypt(encrypt_parameters params, std::string filename)
         std::vector<helib::Ptxt<helib::BGV>> logs_line_ptxt;
         for (const auto &log_item : log_line)
         { 
-            helib::Ptxt<helib::BGV> item(context);
+            helib::Ptxt<helib::BGV> item(*(ctx.context));
             if(log_item.type == 'i') {
                 item[0] = log_item.integrer_entry;
             } 
@@ -61,14 +50,14 @@ struct encrypted_data encrypt(encrypt_parameters params, std::string filename)
         std::vector<helib::Ctxt> encrypted_log_line;
         for (const auto &log_item : log_line)
         {
-            helib::Ctxt encrypted_log_item(public_key);
-            public_key.Encrypt(encrypted_log_item, log_item);
+            helib::Ctxt encrypted_log_item(ctx.pub_key);
+            ctx.pub_key.Encrypt(encrypted_log_item, log_item);
             encrypted_log_line.emplace_back(std::move(encrypted_log_item));
         }
         encrypted_logs.emplace_back(encrypted_log_line);
     }
 
-    struct encrypted_data data = {context, public_key, secret_key, encrypted_logs, logs_size};
+    struct encrypted_data data = {encrypted_logs, logs_size};
 
     return data;
 }

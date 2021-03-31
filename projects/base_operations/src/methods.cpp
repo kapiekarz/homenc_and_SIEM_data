@@ -7,14 +7,14 @@
 #include "../headers/helpers.h"
 #include "../headers/methods.h"
 
-helib::Ctxt add(struct encrypt_parameters params, struct encrypted_data* enc_data, int add_column_no, int search_column_no, std::string query_string) {
+helib::Ctxt add(struct helib_context ctx, struct encrypt_parameters params, struct encrypted_data enc_data, int add_column_no, int search_column_no, std::string query_string) {
     std::cout << "\t" << "encrypting query" << std::endl;
-    std::cout << "\t" << enc_data.context << std::endl;
-    helib::Ptxt<helib::BGV> query_ptxt(enc_data.context);
+    std::cout << "\t" << *(ctx.context) << std::endl;
+    helib::Ptxt<helib::BGV> query_ptxt(*(ctx.context));
     query_ptxt[0] = stoi(query_string);
-    helib::Ctxt query(enc_data.pub_key);
-    enc_data.pub_key.Encrypt(query, query_ptxt);
-    const helib::EncryptedArray &ea = *(enc_data.context.ea);
+    helib::Ctxt query(ctx.pub_key);
+    ctx.pub_key.Encrypt(query, query_ptxt);
+    const helib::EncryptedArray &ea = *((*(ctx.context)).ea);
 
     std::cout << "\t" << "calculating result" << std::endl;
     std::vector<std::vector<helib::Ctxt>> mask;

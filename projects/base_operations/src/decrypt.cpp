@@ -7,11 +7,11 @@
 #include "../headers/helpers.h"
 #include "../headers/decrypt.h"
 
-std::string decrypt(struct encrypted_data enc_data, helib::Ctxt encrypted_result)
+std::string decrypt(struct helib_context ctx, helib::Ctxt encrypted_result)
 {
     std::cout << "\t" << "decrypting to plaintext" << std::endl;
-    helib::Ptxt<helib::BGV> plaintext_result(enc_data.context);
-    enc_data.sec_key.Decrypt(plaintext_result, encrypted_result);
+    helib::Ptxt<helib::BGV> plaintext_result(*(ctx.context));
+    ctx.sec_key.Decrypt(plaintext_result, encrypted_result);
 
     std::cout << "\t" << "converting to string" << std::endl;
     //Convert from ASCII to a string
