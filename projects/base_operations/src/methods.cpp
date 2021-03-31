@@ -7,16 +7,19 @@
 #include "../headers/helpers.h"
 #include "../headers/methods.h"
 
-struct encrypted_data add(struct encrypt_parameters params, struct encrypted_data enc_data, int add_column_no, int search_column_no, std::string query_string) {
-    helib::Ptxt<helib::BGV> query_ptxt(*(enc_data.context));
+helib::Ctxt add(struct encrypt_parameters params, struct encrypted_data* enc_data, int add_column_no, int search_column_no, std::string query_string) {
+    std::cout << "\t" << "encrypting query" << std::endl;
+    std::cout << "\t" << enc_data.context << std::endl;
+    helib::Ptxt<helib::BGV> query_ptxt(enc_data.context);
     query_ptxt[0] = stoi(query_string);
-    helib::Ctxt query(*(enc_data.pub_key));
-    (*(enc_data.pub_key)).Encrypt(query, query_ptxt);
-    const helib::EncryptedArray &ea = *((*(enc_data.context)).ea);
+    helib::Ctxt query(enc_data.pub_key);
+    enc_data.pub_key.Encrypt(query, query_ptxt);
+    const helib::EncryptedArray &ea = *(enc_data.context.ea);
 
+    std::cout << "\t" << "calculating result" << std::endl;
     std::vector<std::vector<helib::Ctxt>> mask;
-    mask.reserve(*(enc_data.logs_size));
-    for (const auto &encrypted_log_line : *(enc_data.data))
+    mask.reserve(enc_data.logs_size);
+    for (const auto &encrypted_log_line : enc_data.data)
     {
         std::vector<helib::Ctxt> mask_line;
         helib::Ctxt mask_entry = encrypted_log_line[search_column_no]; // Copy of database key
@@ -38,21 +41,13 @@ struct encrypted_data add(struct encrypt_parameters params, struct encrypted_dat
         mask.push_back(mask_line);
     }
 
+    std::cout << "\t" << "aggregating result" << std::endl;
     helib::Ctxt value = mask[0][add_column_no];
     for (int i = 1; i < mask.size(); i++) {
         value += mask[i][add_column_no];
     }
 
-    struct encrypted_data ed = {
-        enc_data.context,
-        enc_data.pub_key,
-        NULL,
-        NULL,
-        &value,
-        NULL
-    };
-
-    return ed;
+    return value;
  }
 
  // struct encrypted_data search(struct encrypted_data enc_data, int search_column_no, std::string query_string) {}

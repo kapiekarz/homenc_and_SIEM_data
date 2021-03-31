@@ -7,7 +7,7 @@
 #include "../headers/helpers.h"
 #include "../headers/encrypt.h"
 
-encrypted_data encrypt(encrypt_parameters params, std::string filename)
+struct encrypted_data encrypt(encrypt_parameters params, std::string filename)
 {
     // set NTL Thread pool size
     if (params.nthreads > 1)
@@ -65,18 +65,10 @@ encrypted_data encrypt(encrypt_parameters params, std::string filename)
             public_key.Encrypt(encrypted_log_item, log_item);
             encrypted_log_line.emplace_back(std::move(encrypted_log_item));
         }
-        
         encrypted_logs.emplace_back(encrypted_log_line);
     }
 
-    struct encrypted_data ed = {
-        &context,
-        &public_key,
-        &secret_key,
-        &encrypted_logs,
-        NULL,
-        &logs_size
-    };
+    struct encrypted_data data = {context, public_key, secret_key, encrypted_logs, logs_size};
 
-    return ed;
+    return data;
 }

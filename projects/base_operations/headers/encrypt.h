@@ -1,4 +1,4 @@
 #include <iostream>
 #include "helpers.h"
 
-encrypted_data encrypt(encrypt_parameters params, std::string filename);
+void encrypt(encrypt_parameters params, struct encrypted_data* data, std::string filename);

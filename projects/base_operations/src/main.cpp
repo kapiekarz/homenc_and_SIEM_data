@@ -10,13 +10,14 @@ int main(int argc, char *argv[])
     params.p = 4999;
     params.m = 32109;
     params.bits = 1000;
-    
+
     std::cout << "Encrypting..." << std::endl;
-    encrypted_data data = encrypt(params, "../data/short-test.csv");
+    struct encrypted_data data = encrypt(params, "./data/short-test.csv");
+    // std::cout << "\t" << *(data.context) << std::endl;
     std::cout << "Adding..." << std::endl;
-    encrypted_data result = add(params, data, 0, 1, "2");
+    helib::Ctxt result = add(params, data, 0, 1, "2");
     std::cout << "Decrypting..." << std::endl;
-    std::string s_result = decrypt(result);
+    std::string s_result = decrypt(data, result);
 
     std::cout << s_result << std::endl;
 }

@@ -27,13 +27,16 @@ struct encrypt_parameters {
 };
 
 struct encrypted_data {
-    helib::Context* context;
-    const helib::PubKey* pub_key;
-    helib::SecKey* sec_key;
-    std::vector<std::vector<helib::Ctxt>>* data;
-    helib::Ctxt* enc_result;
-    int* logs_size;
+    helib::Context context;
+    const helib::PubKey pub_key;
+    const helib::SecKey sec_key;
+    std::vector<std::vector<helib::Ctxt>> data;
+    int logs_size;
 };
+//     helib::Ctxt enc_result;
+//     
+//     encrypted_data(){};
+// };
 
 // Utility function to read CSV data from file
 std::vector<std::vector<data_entry>> read_csv(std::string filename);
