@@ -31,9 +31,23 @@ int main(int argc, char *argv[])
     std::cout << "Encrypting..." << std::endl;
     struct encrypted_data data = encrypt(ctx, "./data/short-test.csv");
     std::cout << "Adding..." << std::endl;
-    helib::Ctxt result = add(ctx, params, data, 0, 1, "0");
+    HELIB_NTIMER_START(timer_old_add);
+    helib::Ctxt result = old_add(ctx, params, data, 0, 1, "0");
+    HELIB_NTIMER_STOP(timer_old_add);
     std::cout << "Decrypting..." << std::endl;
     helib::Ptxt<helib::BGV>  decrypted_result = decrypt(ctx, result);
-
     std::cout << decrypted_result << std::endl;
+
+    std::cout << "Adding 2..." << std::endl;
+    HELIB_NTIMER_START(timer_add);
+    helib::Ctxt result2 = add(ctx, params, data, 0, 1, "0");
+    HELIB_NTIMER_STOP(timer_add);
+    std::cout << "Decrypting 2..." << std::endl;
+    helib::Ptxt<helib::BGV>  decrypted_result2 = decrypt(ctx, result2);
+    std::cout << decrypted_result2 << std::endl;
+
+
+    helib::printNamedTimer(std::cout, "timer_old_add");
+    helib::printNamedTimer(std::cout, "timer_add");
+    std::cout << std::endl;
 }
