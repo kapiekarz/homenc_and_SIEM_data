@@ -1,3 +1,0 @@
-/home/kpiekarz/repos/homenc_and_SIEM_data/projects/helib_tutorial/CMakeFiles/rebuild_cache.dir
-/home/kpiekarz/repos/homenc_and_SIEM_data/projects/helib_tutorial/CMakeFiles/tutorial.dir
-/home/kpiekarz/repos/homenc_and_SIEM_data/projects/helib_tutorial/CMakeFiles/edit_cache.dir

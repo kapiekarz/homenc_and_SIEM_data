@@ -39,3 +39,5 @@ Makefile
 CMakeCache.txt
 helib.log
 CMakeFiles/
+
+/projects/base_operations/base_operations
