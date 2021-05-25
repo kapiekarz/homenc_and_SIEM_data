@@ -18,18 +18,24 @@ int main(int argc, char *argv[])
     if (params.nthreads > 1)
         NTL::SetNumThreads(params.nthreads);
 
-    helib::Context context(params.m, params.p, params.r);
-    helib::buildModChain(context, params.bits, params.c);
+     helib::Context context = helib::ContextBuilder<helib::BGV>()
+                               .m(params.m)
+                               .p(params.p)
+                               .r(params.r)
+                               .bits(params.bits)
+                               .c(params.c)
+                               .build();
+    
     helib::SecKey secret_key = helib::SecKey(context);
     secret_key.GenSecKey();
     helib::addSome1DMatrices(secret_key);
     const helib::PubKey &public_key = secret_key;
-    const helib::EncryptedArray &ea = *(context.ea);
+    const helib::EncryptedArray &ea = context.getEA();
 
     struct helib_context ctx = {&context, public_key, secret_key};
 
     std::cout << "Encrypting..." << std::endl;
-    struct encrypted_data data = encrypt(ctx, "./data/short-test.csv");
+    struct encrypted_data data = encrypt(ctx, "./data/test-short.csv");
     std::cout << "Adding..." << std::endl;
     HELIB_NTIMER_START(timer_old_add);
     helib::Ctxt result = old_add(ctx, params, data, 0, 1, "0");

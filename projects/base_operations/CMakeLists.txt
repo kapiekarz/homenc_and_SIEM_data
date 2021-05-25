@@ -12,7 +12,7 @@
 cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
 
 ## Use -std=c++14 as default.
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 ## Disable C++ extensions
 set(CMAKE_CXX_EXTENSIONS OFF)
 ## Require full C++ standard
@@ -21,7 +21,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 project(base_operations
        	LANGUAGES CXX)
 
-      find_package(helib 1.1.0 EXACT REQUIRED)
+find_package(helib 2.1.0 EXACT REQUIRED)
 
 add_executable(base_operations src/decrypt.cpp src/encrypt.cpp src/helpers.cpp src/main.cpp src/methods.cpp)
 
