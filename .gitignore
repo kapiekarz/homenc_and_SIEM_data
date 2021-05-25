@@ -31,7 +31,7 @@
 *.out
 *.app
 
-data/
+/data/
 
 projects/ip_lookup/ip_lookup
 
@@ -39,3 +39,5 @@ Makefile
 CMakeCache.txt
 helib.log
 CMakeFiles/
+
+/projects/base_operations/base_operations

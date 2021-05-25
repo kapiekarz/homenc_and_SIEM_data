@@ -11,7 +11,7 @@ helib::Ctxt add(struct helib_context ctx, struct encrypt_parameters params, stru
     query_ptxt[0] = stoi(query_string);
     helib::Ctxt query(ctx.pub_key);
     ctx.pub_key.Encrypt(query, query_ptxt);
-    const helib::EncryptedArray &ea = *((*(ctx.context)).ea);
+    const helib::EncryptedArray &ea = (*(ctx.context)).getEA();
 
     std::cout << "\t" << "calculating result" << std::endl;
     std::vector<std::vector<helib::Ctxt>> mask;
@@ -59,7 +59,7 @@ helib::Ctxt add(struct helib_context ctx, struct encrypt_parameters params, stru
     query_ptxt[0] = stoi(query_string);
     helib::Ctxt query(ctx.pub_key);
     ctx.pub_key.Encrypt(query, query_ptxt);
-    const helib::EncryptedArray &ea = *((*(ctx.context)).ea);
+    const helib::EncryptedArray &ea = (*(ctx.context)).getEA();
 
     std::cout << "\t" << "calculating result" << std::endl;
     std::vector<std::vector<helib::Ctxt>> mask;
