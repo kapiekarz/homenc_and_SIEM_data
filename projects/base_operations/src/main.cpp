@@ -36,13 +36,14 @@ int main(int argc, char *argv[])
 
     std::cout << "Encrypting..." << std::endl;
     struct encrypted_data data = encrypt(ctx, "./data/test-short.csv");
-    std::cout << "Adding..." << std::endl;
+
+    std::cout << "Adding data form row 0 when row 1 is set to '0'..." << std::endl;
     HELIB_NTIMER_START(timer_old_add);
     helib::Ctxt result = old_add(ctx, params, data, 0, 1, "0");
     HELIB_NTIMER_STOP(timer_old_add);
     std::cout << "Decrypting..." << std::endl;
     helib::Ptxt<helib::BGV>  decrypted_result = decrypt(ctx, result);
-    std::cout << decrypted_result << std::endl;
+    std::cout << decrypted_result[0] << std::endl;
 
     std::cout << "Adding 2..." << std::endl;
     HELIB_NTIMER_START(timer_add);
@@ -50,10 +51,18 @@ int main(int argc, char *argv[])
     HELIB_NTIMER_STOP(timer_add);
     std::cout << "Decrypting 2..." << std::endl;
     helib::Ptxt<helib::BGV>  decrypted_result2 = decrypt(ctx, result2);
-    std::cout << decrypted_result2 << std::endl;
-
+    std::cout << decrypted_result2[0] << std::endl;
 
     helib::printNamedTimer(std::cout, "timer_old_add");
     helib::printNamedTimer(std::cout, "timer_add");
     std::cout << std::endl;
+
+    std::cout << "Searching all occurences when data in row 1 is '0'..." << std::endl;
+    HELIB_NTIMER_START(timer_search);
+    helib::Ctxt result3 = search(ctx, params, data, 1, "0");
+    HELIB_NTIMER_STOP(timer_search);
+    std::cout << "Decrypting..." << std::endl;
+    helib::Ptxt<helib::BGV>  decrypted_result3 = decrypt(ctx, result3);
+    std::cout << "Occurences: " << decrypted_result3[0] << std::endl;
+    helib::printNamedTimer(std::cout, "timer_search");
 }
