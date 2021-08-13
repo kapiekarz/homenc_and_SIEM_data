@@ -5,15 +5,15 @@
 #include "../headers/helpers.h"
 #include "../headers/methods.h"
 
-helib::Ctxt add(struct helib_context ctx, struct encrypt_parameters params, struct encrypted_data enc_data, int add_column_no, int search_column_no, std::string query_string) {
-    std::cout << "\t" << "encrypting query" << std::endl;
+helib::Ctxt add(struct helib_context ctx, struct encrypt_parameters params, struct encrypted_data enc_data, int add_column_no, int search_column_no, std::string query_string, bool verbose) {
+    if(verbose) std::cout << "\t" << "encrypting query" << std::endl;
     helib::Ptxt<helib::BGV> query_ptxt(*(ctx.context));
     query_ptxt[0] = stoi(query_string);
     helib::Ctxt query(ctx.pub_key);
     ctx.pub_key.Encrypt(query, query_ptxt);
     const helib::EncryptedArray &ea = (*(ctx.context)).getEA();
 
-    std::cout << "\t" << "calculating result" << std::endl;
+    if(verbose) std::cout << "\t" << "calculating result" << std::endl;
     std::vector<std::vector<helib::Ctxt>> mask;
     mask.reserve(enc_data.logs_size);
     for (const auto &encrypted_log_line : enc_data.data)
@@ -21,7 +21,7 @@ helib::Ctxt add(struct helib_context ctx, struct encrypt_parameters params, stru
         std::vector<helib::Ctxt> mask_line;
         helib::Ctxt mask_entry = encrypted_log_line[search_column_no]; // Copy of database key
         mask_entry -= query;                         // Calculate the difference
-        mask_entry.power(params.p - 1);              // Fermat's little theorem
+        // mask_entry.power(params.p - 1);              // Fermat's little theorem
         mask_entry.negate();                         // Negate the ciphertext
         mask_entry.addConstant(NTL::ZZX(1));         // 1 - mask = 0 or 1
 
@@ -44,7 +44,7 @@ helib::Ctxt add(struct helib_context ctx, struct encrypt_parameters params, stru
         mask.push_back(mask_line);
     }
 
-    std::cout << "\t" << "aggregating result" << std::endl;
+    if(verbose) std::cout << "\t" << "aggregating result" << std::endl;
     helib::Ctxt value = mask[0][add_column_no];
     for (int i = 1; i < mask.size(); i++) {
         value += mask[i][add_column_no];
@@ -53,15 +53,15 @@ helib::Ctxt add(struct helib_context ctx, struct encrypt_parameters params, stru
     return value;
  }
 
- helib::Ctxt old_add(struct helib_context ctx, struct encrypt_parameters params, struct encrypted_data enc_data, int add_column_no, int search_column_no, std::string query_string) {
-    std::cout << "\t" << "encrypting query" << std::endl;
+ helib::Ctxt old_add(struct helib_context ctx, struct encrypt_parameters params, struct encrypted_data enc_data, int add_column_no, int search_column_no, std::string query_string, bool verbose) {
+    if(verbose) std::cout << "\t" << "encrypting query" << std::endl;
     helib::Ptxt<helib::BGV> query_ptxt(*(ctx.context));
     query_ptxt[0] = stoi(query_string);
     helib::Ctxt query(ctx.pub_key);
     ctx.pub_key.Encrypt(query, query_ptxt);
     const helib::EncryptedArray &ea = (*(ctx.context)).getEA();
 
-    std::cout << "\t" << "calculating result" << std::endl;
+    if(verbose) std::cout << "\t" << "calculating result" << std::endl;
     std::vector<std::vector<helib::Ctxt>> mask;
     mask.reserve(enc_data.logs_size);
     for (const auto &encrypted_log_line : enc_data.data)
@@ -87,7 +87,7 @@ helib::Ctxt add(struct helib_context ctx, struct encrypt_parameters params, stru
         mask.push_back(mask_line);
     }
 
-    std::cout << "\t" << "aggregating result" << std::endl;
+    if(verbose) std::cout << "\t" << "aggregating result" << std::endl;
     helib::Ctxt value = mask[0][add_column_no];
     for (int i = 1; i < mask.size(); i++) {
         value += mask[i][add_column_no];
@@ -97,15 +97,15 @@ helib::Ctxt add(struct helib_context ctx, struct encrypt_parameters params, stru
  }
 
 
- helib::Ctxt search(struct helib_context ctx, struct encrypt_parameters params, struct encrypted_data enc_data, int search_column_no, std::string query_string) {
-    std::cout << "\t" << "encrypting query" << std::endl;
+ helib::Ctxt search(struct helib_context ctx, struct encrypt_parameters params, struct encrypted_data enc_data, int search_column_no, std::string query_string, bool verbose) {
+    if(verbose) std::cout << "\t" << "encrypting query" << std::endl;
     helib::Ptxt<helib::BGV> query_ptxt(*(ctx.context));
     query_ptxt[0] = stoi(query_string);
     helib::Ctxt query(ctx.pub_key);
     ctx.pub_key.Encrypt(query, query_ptxt);
     const helib::EncryptedArray &ea = (*(ctx.context)).getEA();
 
-    std::cout << "\t" << "calculating result" << std::endl;
+    if(verbose) std::cout << "\t" << "calculating result" << std::endl;
     std::vector<helib::Ctxt> mask;
     mask.reserve(enc_data.logs_size);
     for (const auto &encrypted_log_line : enc_data.data)
@@ -127,7 +127,7 @@ helib::Ctxt add(struct helib_context ctx, struct encrypt_parameters params, stru
         mask.push_back(mask_entry_unified);
     }
 
-    std::cout << "\t" << "aggregating result" << std::endl;
+    if(verbose) std::cout << "\t" << "aggregating result" << std::endl;
     helib::Ctxt value = mask[0];
     for (int i = 1; i < mask.size(); i++) {
         value += mask[i];
@@ -135,3 +135,76 @@ helib::Ctxt add(struct helib_context ctx, struct encrypt_parameters params, stru
 
     return value;
  }
+
+
+ std::vector<helib::Ctxt> filter(struct helib_context ctx, struct encrypt_parameters params, struct encrypted_data enc_data, int filter_column_no, std::string query_string, bool verbose) {
+    if(verbose) std::cout << "\t" << "encrypting query" << std::endl;
+    helib::Ptxt<helib::BGV> query_ptxt(*(ctx.context));
+    query_ptxt[0] = stoi(query_string);
+    helib::Ctxt query(ctx.pub_key);
+    ctx.pub_key.Encrypt(query, query_ptxt);
+    const helib::EncryptedArray &ea = (*(ctx.context)).getEA();
+
+    if(verbose) std::cout << "\t" << "calculating result" << std::endl;
+    std::vector<helib::Ctxt> mask;
+    mask.reserve(enc_data.logs_size);
+    for (const auto &encrypted_log_line : enc_data.data)
+    {
+        std::vector<helib::Ctxt> mask_line;
+        helib::Ctxt mask_entry = encrypted_log_line[search_column_no]; // Copy of database key
+        mask_entry -= query;                         // Calculate the difference
+        mask_entry.power(params.p - 1);              // Fermat's little theorem
+        mask_entry.negate();                         // Negate the ciphertext
+        mask_entry.addConstant(NTL::ZZX(1));         // 1 - mask = 0 or 1
+
+        helib::Ctxt mask_entry_unified = mask_entry;
+        totalSums(mask_entry_unified);
+        mask_entry_unified.addConstant(NTL::ZZX(-ea.size()));
+        mask_entry_unified.power(params.p - 1);         
+        mask_entry_unified.negate();                          
+        mask_entry_unified.addConstant(NTL::ZZX(1));    
+
+        mask.push_back(mask_entry_unified);
+    }
+    return mask;
+ }
+
+
+//  helib::Ctxt average(struct helib_context ctx, struct encrypt_parameters params, struct encrypted_data enc_data, int search_column_no, std::string query_string, bool verbose) {
+    // if(verbose) std::cout << "\t" << "encrypting query" << std::endl;
+    // helib::Ptxt<helib::BGV> query_ptxt(*(ctx.context));
+    // query_ptxt[0] = stoi(query_string);
+    // helib::Ctxt query(ctx.pub_key);
+    // ctx.pub_key.Encrypt(query, query_ptxt);
+    // const helib::EncryptedArray &ea = (*(ctx.context)).getEA();
+
+    // if(verbose) std::cout << "\t" << "calculating result" << std::endl;
+    // std::vector<helib::Ctxt> mask;
+    // mask.reserve(enc_data.logs_size);
+    // for (const auto &encrypted_log_line : enc_data.data)
+    // {
+    //     std::vector<helib::Ctxt> mask_line;
+    //     helib::Ctxt mask_entry = encrypted_log_line[search_column_no]; // Copy of database key
+    //     mask_entry -= query;                         // Calculate the difference
+    //     mask_entry.power(params.p - 1);              // Fermat's little theorem
+    //     mask_entry.negate();                         // Negate the ciphertext
+    //     mask_entry.addConstant(NTL::ZZX(1));         // 1 - mask = 0 or 1
+
+    //     helib::Ctxt mask_entry_unified = mask_entry;
+    //     totalSums(mask_entry_unified);
+    //     mask_entry_unified.addConstant(NTL::ZZX(-ea.size()));
+    //     mask_entry_unified.power(params.p - 1);         
+    //     mask_entry_unified.negate();                          
+    //     mask_entry_unified.addConstant(NTL::ZZX(1));    
+
+    //     mask.push_back(mask_entry_unified);
+    // }
+
+    // if(verbose) std::cout << "\t" << "aggregating result" << std::endl;
+    // helib::Ctxt value = mask[0];
+    // for (int i = 1; i < mask.size(); i++) {
+    //     value += mask[i];
+    // }
+
+    // return value;
+//  }

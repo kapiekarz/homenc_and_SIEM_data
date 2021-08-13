@@ -4,9 +4,9 @@
 #include "../headers/helpers.h"
 #include "../headers/encrypt.h"
 
-struct encrypted_data encrypt(struct helib_context ctx, std::string filename)
+struct encrypted_data encrypt(struct helib_context ctx, std::string filename, bool verbose)
 {
-    std::cout << "\t" << "reading file" << std::endl;
+    if(verbose) std::cout << "\t" << "reading file" << std::endl;
     std::vector<std::vector<data_entry>> logs;
     try
     {
@@ -21,7 +21,7 @@ struct encrypted_data encrypt(struct helib_context ctx, std::string filename)
 
     int logs_size = logs.size();
 
-    std::cout << "\t" << "creating plaintext" << std::endl;
+    if(verbose) std::cout << "\t" << "creating plaintext" << std::endl;
     std::vector<std::vector<helib::Ptxt<helib::BGV>>> logs_ptxt;
     for (const auto &log_line : logs)
     {
@@ -40,7 +40,7 @@ struct encrypted_data encrypt(struct helib_context ctx, std::string filename)
         logs_ptxt.emplace_back(logs_line_ptxt);
     }
 
-    std::cout << "\t" << "encrypting plaintext" << std::endl;
+    if(verbose) std::cout << "\t" << "encrypting plaintext" << std::endl;
     std::vector<std::vector<helib::Ctxt>> encrypted_logs;
     for (const auto &log_line : logs_ptxt)
     {
