@@ -25,12 +25,16 @@ std::vector<std::vector<struct data_entry>> read_csv(std::string filename)
         {
             row.clear();
             std::stringstream ss(line);
-            int i = 0;
-            while (getline(ss, entry, ','))
+            int i = 3;
+            while (getline(ss, entry, ';'))
             {
                 struct data_entry cell;
                 if(column_type[i] == 'i') {
-                    cell.integrer_entry = std::stoi(entry);
+                    if(entry.empty()){
+                       cell.integrer_entry = 0;
+                    } else {
+                       cell.integrer_entry = std::stoi(entry);
+                    }
                     cell.type = 'i';
                 } 
                 if(column_type[i] == 's') { 

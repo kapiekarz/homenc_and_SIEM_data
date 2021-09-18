@@ -39,15 +39,15 @@ int main(int argc, char *argv[])
 
     struct helib_context ctx = {&context, public_key, secret_key};
 
-    // std::cout << "Encrypting... ";
-    struct encrypted_data data = encrypt(ctx, "./data/test-short.csv");
+    std::cout << "Encrypting... ";
+    struct encrypted_data data = encrypt(ctx, "./data/investigation-short3.csv", true);
 
-    // std::cout << "Adding... ";
+    std::cout << "Adding... ";
     HELIB_NTIMER_START(timer_add);
-    helib::Ctxt result2 = add(ctx, params, data, 0, 1, "0");
+    helib::Ctxt result2 = old_add(ctx, params, data, 2, 5, "00:90:0B:60:4F:DB", true);
     HELIB_NTIMER_STOP(timer_add);
-    // std::cout << "Decrypting... ";
-    helib::Ptxt<helib::BGV>  decrypted_result2 = decrypt(ctx, result2);
+    std::cout << "Decrypting... ";
+    helib::Ptxt<helib::BGV>  decrypted_result2 = decrypt(ctx, result2, true);
     std::cout << decrypted_result2[0] << " "; 
     helib::printNamedTimer(std::cout, "timer_add");
     

@@ -33,7 +33,9 @@ struct encrypted_data encrypt(struct helib_context ctx, std::string filename, bo
                 item[0] = log_item.integrer_entry;
             } 
             if(log_item.type == 's') { 
-                item[0] = std::stoi(log_item.text_entry);
+                for (long i = 0; i < 100; ++i) {
+                    item.at(i) = log_item.text_entry[i];
+                }
             }
             logs_line_ptxt.emplace_back(std::move(item));
         }
