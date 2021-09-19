@@ -34,7 +34,7 @@ helib::Ctxt add(struct helib_context ctx, struct encrypt_parameters params, stru
         std::vector<helib::Ctxt> mask_line;
         helib::Ctxt mask_entry = encrypted_log_line[search_column_no]; // Copy of database key
         mask_entry -= query;                         // Calculate the difference
-        // mask_entry.power(params.p - 1);              // Fermat's little theorem
+        mask_entry.power(params.p - 1);              // Fermat's little theorem
         mask_entry.negate();                         // Negate the ciphertext
         mask_entry.addConstant(NTL::ZZX(1));         // 1 - mask = 0 or 1
 
@@ -177,7 +177,7 @@ helib::Ctxt add(struct helib_context ctx, struct encrypt_parameters params, stru
 //  std::vector<helib::Ctxt> filter(struct helib_context ctx, struct encrypt_parameters params, struct encrypted_data enc_data, int filter_column_no, std::string query_string, bool verbose) {
 //     if(verbose) std::cout << "\t" << "encrypting query" << std::endl;
 //     helib::Ptxt<helib::BGV> query_ptxt(*(ctx.context));
-// bool isNumber = true;
+//     bool isNumber = true;
 //     for (int i=0; i<query_string.length(); i++){
 //         if(!isdigit(query_string[i])) {
 //             isNumber = false;

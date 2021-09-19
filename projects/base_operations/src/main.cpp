@@ -9,12 +9,17 @@
 
 int main(int argc, char *argv[])
 {
-    long m_array[] = {helib::FindM(128, 1024, 3, 65537, 0, 0, 0), 18631, 21845, 28679, 35113, 42799, 45551, 49981, 51319, 65539};
+    // long m_array[] = {helib::FindM(128, 1024, 3, 65537, 0, 0, 0), 18631, 21845, 28679, 35113, 42799, 45551, 49981, 51319, 65539};
 
     struct encrypt_parameters params;
+    // params.p = 3907; // dziala add
+    // params.p = 65537; // dziala add_old
     params.p = 65537;
-    params.m = helib::FindM(128, 1024, 2, 65537, 1, 0, 0);
-    params.bits = 1024;
+    params.c = 3;
+    // params.m = helib::FindM(64, 1500, params.c, params.p, 1, 0, 0); // dziala add
+    // params.m = helib::FindM(64, 1000, params.c, params.p, 1, 0, 0); // dziala add_old
+    params.m = helib::FindM(64, 1000, params.c, params.p, 1, 0, 0);
+    params.bits = 1000;
 
     std::cout <<  params.m << std::endl;
 
@@ -35,7 +40,7 @@ int main(int argc, char *argv[])
     helib::addSome1DMatrices(secret_key);
     const helib::PubKey &public_key = secret_key;
     const helib::EncryptedArray &ea = context.getEA();
-    std::cout << context.securityLevel() << " ";
+    std::cout << context.securityLevel() << std::endl;
 
     struct helib_context ctx = {&context, public_key, secret_key};
 
@@ -44,7 +49,7 @@ int main(int argc, char *argv[])
 
     std::cout << "Adding... ";
     HELIB_NTIMER_START(timer_add);
-    helib::Ctxt result2 = old_add(ctx, params, data, 2, 5, "00:90:0B:60:4F:DB", true);
+    helib::Ctxt result2 = old_add(ctx, params, data, 2, 3, "37", true);
     HELIB_NTIMER_STOP(timer_add);
     std::cout << "Decrypting... ";
     helib::Ptxt<helib::BGV>  decrypted_result2 = decrypt(ctx, result2, true);
