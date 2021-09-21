@@ -10,12 +10,10 @@
 int main(int argc, char *argv[])
 {
     struct encrypt_parameters params;
-    // params.p = 3907; // for add, search
-    params.p = 65537; // for add_old
-    params.c = 3;
-    params.nthreads = 8;
-    // params.m = helib::FindM(64, 1500, params.c, params.p, 1, 0, 0); // for add, search
-    params.m = helib::FindM(64, 1000, params.c, params.p, 1, 0, 0); // for add_old
+    params.p = 2131; 
+    params.c = 12;
+    params.nthreads = 1;
+    params.m = helib::FindM(64, 1000, params.c, params.p, 1, 0, 0);
     params.bits = 1000;
 
     std::cout <<  params.m << std::endl;
@@ -49,7 +47,7 @@ int main(int argc, char *argv[])
 
     std::cout << "Adding... ";
     HELIB_NTIMER_START(timer_add2);
-    // adding all entries in column 2, when the column 3 has value "37"
+    std::cout << "adding all entries in column 2, when the column 3 has value '37'" << std::endl;
     helib::Ctxt result2 = old_add(ctx, params, data, 2, 3, "37", true);
     HELIB_NTIMER_STOP(timer_add2);
     std::cout << "Decrypting... ";
@@ -62,7 +60,7 @@ int main(int argc, char *argv[])
 
     // std::cout << "Adding... ";
     // HELIB_NTIMER_START(timer_add);
-    // // adding all entries in column 2, when the column 3 has value "37"
+    // std::cout << "adding all entries in column 2, when the column 3 has value '37'" << std::endl;
     // helib::Ctxt result2 = add(ctx, params, data, 2, 3, "37", true);
     // HELIB_NTIMER_STOP(timer_add);
     // std::cout << "Decrypting... ";
