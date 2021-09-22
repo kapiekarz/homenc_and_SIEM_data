@@ -109,4 +109,16 @@ int main(int argc, char *argv[])
     HELIB_NTIMER_STOP(timer_dec4);
     helib::printNamedTimer(std::cout, "timer_filt1");
     helib::printNamedTimer(std::cout, "timer_dec4");
+
+    // std::cout << "Filtering... ";
+    // HELIB_NTIMER_START(timer_filt2);
+    // std::cout << "Filtering all records that don't have '76' in column 2" << std::endl;
+    // std::vector<std::vector<helib::Ctxt>> result6 = filter(ctx, params, data, 2, "76", NMATCH, true);
+    // HELIB_NTIMER_STOP(timer_filt2);
+    // std::cout << "Decrypting... " << std::endl;
+    // HELIB_NTIMER_START(timer_dec5);
+    // decrypt_and_print("./data/investigation-short3.csv", ctx, result6);
+    // HELIB_NTIMER_STOP(timer_dec5);
+    // helib::printNamedTimer(std::cout, "timer_filt2");
+    // helib::printNamedTimer(std::cout, "timer_dec5");
 }

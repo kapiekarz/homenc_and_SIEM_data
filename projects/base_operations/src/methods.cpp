@@ -231,8 +231,8 @@ helib::Ctxt average(struct helib_context ctx, struct encrypt_parameters params, 
 
     switch(function_name) 
     {
-        case CONT:
-            return contains(ctx,params,enc_data,filter_column_no,query);
+        case NMATCH:
+            return notMatches(ctx,params,enc_data,filter_column_no,query);
         case MATCH: 
         default:
             return matches(ctx,params,enc_data,filter_column_no,query);

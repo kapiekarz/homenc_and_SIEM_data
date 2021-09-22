@@ -5,7 +5,7 @@
 #include "../headers/helpers.h"
 #include "../headers/filterfunctions.h"
 
-std::vector<std::vector<helib::Ctxt>> contains(struct helib_context ctx,struct encrypt_parameters params,struct encrypted_data enc_data,int search_column_no,helib::Ctxt query) {
+std::vector<std::vector<helib::Ctxt>> notMatches(struct helib_context ctx,struct encrypt_parameters params,struct encrypted_data enc_data,int search_column_no,helib::Ctxt query) {
     const helib::EncryptedArray &ea = (*(ctx.context)).getEA();
     std::vector<std::vector<helib::Ctxt>> mask;
     mask.reserve(enc_data.logs_size);
@@ -23,8 +23,6 @@ std::vector<std::vector<helib::Ctxt>> contains(struct helib_context ctx,struct e
         totalSums(mask_entry_unified);
         mask_entry_unified.addConstant(NTL::ZZX(-ea.size()));
         mask_entry_unified.power(params.p - 1);         
-        mask_entry_unified.negate();                          
-        mask_entry_unified.addConstant(NTL::ZZX(1));    
 
         std::vector<helib::Ctxt> mask_entry_unified_vector = {mask_entry_unified};
 
