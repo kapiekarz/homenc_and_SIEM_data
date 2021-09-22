@@ -6,13 +6,14 @@
 #include "../headers/encrypt.h"
 #include "../headers/decrypt.h"
 #include "../headers/methods.h"
+#include "../headers/filterfunctions.h"
 
 int main(int argc, char *argv[])
 {
     struct encrypt_parameters params;
     params.p = 2131; 
-    params.c = 12;
-    params.nthreads = 1;
+    params.c = 3;
+    params.nthreads = 8;
     params.m = helib::FindM(64, 1000, params.c, params.p, 1, 0, 0);
     params.bits = 1000;
 
@@ -45,18 +46,18 @@ int main(int argc, char *argv[])
     HELIB_NTIMER_STOP(timer_enc);
     helib::printNamedTimer(std::cout, "timer_enc");
 
-    std::cout << "Adding... ";
-    HELIB_NTIMER_START(timer_add2);
-    std::cout << "adding all entries in column 2, when the column 3 has value '37'" << std::endl;
-    helib::Ctxt result2 = old_add(ctx, params, data, 2, 3, "37", true);
-    HELIB_NTIMER_STOP(timer_add2);
-    std::cout << "Decrypting... ";
-    HELIB_NTIMER_START(timer_dec2);
-    helib::Ptxt<helib::BGV>  decrypted_result2 = decrypt(ctx, result2, true);
-    HELIB_NTIMER_STOP(timer_dec2);
-    std::cout << decrypted_result2[0] << " "; 
-    helib::printNamedTimer(std::cout, "timer_add2");
-    helib::printNamedTimer(std::cout, "timer_dec2");
+    // std::cout << "Adding... ";
+    // HELIB_NTIMER_START(timer_add2);
+    // std::cout << "adding all entries in column 2, when the column 3 has value '37'" << std::endl;
+    // helib::Ctxt result2 = old_add(ctx, params, data, 2, 3, "37", true);
+    // HELIB_NTIMER_STOP(timer_add2);
+    // std::cout << "Decrypting... ";
+    // HELIB_NTIMER_START(timer_dec2);
+    // helib::Ptxt<helib::BGV>  decrypted_result2 = decrypt(ctx, result2, true);
+    // HELIB_NTIMER_STOP(timer_dec2);
+    // std::cout << decrypted_result2[0] << " "; 
+    // helib::printNamedTimer(std::cout, "timer_add2");
+    // helib::printNamedTimer(std::cout, "timer_dec2");
 
     // std::cout << "Adding... ";
     // HELIB_NTIMER_START(timer_add);
@@ -83,4 +84,35 @@ int main(int argc, char *argv[])
     // std::cout << "Occurences: " << decrypted_result3[0] << std::endl;
     // helib::printNamedTimer(std::cout, "timer_search");
     // helib::printNamedTimer(std::cout, "timer_dec3");
+
+    // std::cout << "Calculating average... ";
+    // HELIB_NTIMER_START(timer_avg);
+    // std::cout << "Average of all entries in column 2" << std::endl;
+    // helib::Ctxt result4 = average(ctx, params, data, 2, true);
+    // HELIB_NTIMER_STOP(timer_avg);
+    // std::cout << "Decrypting... ";
+    // HELIB_NTIMER_START(timer_dec3);
+    // helib::Ptxt<helib::BGV>  decrypted_result4 = decrypt(ctx, result4, true);
+    // HELIB_NTIMER_STOP(timer_dec3);
+    // std::cout << decrypted_result4[0] << " "; 
+    // helib::printNamedTimer(std::cout, "timer_avg");
+    // helib::printNamedTimer(std::cout, "timer_dec3");
+
+    std::cout << "Filtering... ";
+    HELIB_NTIMER_START(timer_fil1);
+    std::cout << "Filtering all records that have '76' in column 2" << std::endl;
+    std::vector<std::vector<helib::Ctxt>> result5 = filter(ctx, params, data, 2, "76", MATCH, true);
+    HELIB_NTIMER_STOP(timer_fil1);
+    std::cout << "Decrypting... ";
+    HELIB_NTIMER_START(timer_dec4);
+    for(const auto &row : result5) {
+        for(const auto &entry : row) {
+            helib::Ptxt<helib::BGV>  decrypted_result5 = decrypt(ctx, entry, true);
+            std::cout << decrypted_result5 << " "; 
+        }
+        std::cout << std::endl;
+    }
+    HELIB_NTIMER_STOP(timer_dec4);
+    helib::printNamedTimer(std::cout, "timer_fil1");
+    helib::printNamedTimer(std::cout, "timer_dec4");
 }

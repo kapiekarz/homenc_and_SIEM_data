@@ -23,7 +23,7 @@ project(base_operations
 
 find_package(helib 2.1.0 EXACT REQUIRED)
 
-add_executable(base_operations src/decrypt.cpp src/encrypt.cpp src/helpers.cpp src/main.cpp src/methods.cpp)
+add_executable(base_operations src/decrypt.cpp src/encrypt.cpp src/filterfunctions.cpp src/helpers.cpp src/main.cpp src/methods.cpp)
 
 target_link_libraries(base_operations helib)
 
