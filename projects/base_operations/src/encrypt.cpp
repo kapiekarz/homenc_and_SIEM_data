@@ -4,9 +4,9 @@
 #include "../headers/helpers.h"
 #include "../headers/encrypt.h"
 
-struct encrypted_data encrypt(struct helib_context ctx, std::string filename)
+struct encrypted_data encrypt(struct helib_context ctx, std::string filename, bool verbose)
 {
-    std::cout << "\t" << "reading file" << std::endl;
+    if(verbose) std::cout << "\t" << "reading file" << std::endl;
     std::vector<std::vector<data_entry>> logs;
     try
     {
@@ -21,7 +21,7 @@ struct encrypted_data encrypt(struct helib_context ctx, std::string filename)
 
     int logs_size = logs.size();
 
-    std::cout << "\t" << "creating plaintext" << std::endl;
+    if(verbose) std::cout << "\t" << "creating plaintext" << std::endl;
     std::vector<std::vector<helib::Ptxt<helib::BGV>>> logs_ptxt;
     for (const auto &log_line : logs)
     {
@@ -33,14 +33,16 @@ struct encrypted_data encrypt(struct helib_context ctx, std::string filename)
                 item[0] = log_item.integrer_entry;
             } 
             if(log_item.type == 's') { 
-                item[0] = std::stoi(log_item.text_entry);
+                for (long i = 0; i < log_item.text_entry.length(); ++i) {
+                    item.at(i) = log_item.text_entry[i];
+                }
             }
             logs_line_ptxt.emplace_back(std::move(item));
         }
         logs_ptxt.emplace_back(logs_line_ptxt);
     }
 
-    std::cout << "\t" << "encrypting plaintext" << std::endl;
+    if(verbose) std::cout << "\t" << "encrypting plaintext" << std::endl;
     std::vector<std::vector<helib::Ctxt>> encrypted_logs;
     for (const auto &log_line : logs_ptxt)
     {
