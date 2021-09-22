@@ -4,6 +4,8 @@
 #include <iostream>
 #include <helib/helib.h>
 
+#include "decrypt.h"
+
 struct data_entry {
     int integrer_entry;
     std::string text_entry;
@@ -39,5 +41,6 @@ struct encrypted_data {
 
 // Utility function to read CSV data from file
 std::vector<std::vector<data_entry>> read_csv(std::string filename);
+void decrypt_and_print(std::string filename, struct helib_context ctx, std::vector<std::vector<helib::Ctxt>> result);
 
 #endif

@@ -99,20 +99,14 @@ int main(int argc, char *argv[])
     // helib::printNamedTimer(std::cout, "timer_dec3");
 
     std::cout << "Filtering... ";
-    HELIB_NTIMER_START(timer_fil1);
+    HELIB_NTIMER_START(timer_filt1);
     std::cout << "Filtering all records that have '76' in column 2" << std::endl;
     std::vector<std::vector<helib::Ctxt>> result5 = filter(ctx, params, data, 2, "76", MATCH, true);
-    HELIB_NTIMER_STOP(timer_fil1);
-    std::cout << "Decrypting... ";
+    HELIB_NTIMER_STOP(timer_filt1);
+    std::cout << "Decrypting... " << std::endl;
     HELIB_NTIMER_START(timer_dec4);
-    for(const auto &row : result5) {
-        for(const auto &entry : row) {
-            helib::Ptxt<helib::BGV>  decrypted_result5 = decrypt(ctx, entry, true);
-            std::cout << decrypted_result5 << " "; 
-        }
-        std::cout << std::endl;
-    }
+    decrypt_and_print("./data/investigation-short3.csv", ctx, result5);
     HELIB_NTIMER_STOP(timer_dec4);
-    helib::printNamedTimer(std::cout, "timer_fil1");
+    helib::printNamedTimer(std::cout, "timer_filt1");
     helib::printNamedTimer(std::cout, "timer_dec4");
 }

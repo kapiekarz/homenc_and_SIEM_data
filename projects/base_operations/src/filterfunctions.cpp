@@ -13,7 +13,7 @@ std::vector<std::vector<helib::Ctxt>> contains(struct helib_context ctx,struct e
     for (const auto &encrypted_log_line : enc_data.data)
     {
         std::vector<helib::Ctxt> mask_line;
-        helib::Ctxt mask_entry = encrypted_log_line[search_column_no]; // Copy of database key
+        helib::Ctxt mask_entry = encrypted_log_line[search_column_no]; // Copy of the entry
         mask_entry -= query;                         // Calculate the difference
         mask_entry.power(params.p - 1);              // Fermat's little theorem
         mask_entry.negate();                         // Negate the ciphertext
@@ -48,7 +48,7 @@ std::vector<std::vector<helib::Ctxt>> matches(struct helib_context ctx,struct en
     for (const auto &encrypted_log_line : enc_data.data)
     {
         std::vector<helib::Ctxt> mask_line;
-        helib::Ctxt mask_entry = encrypted_log_line[search_column_no]; // Copy of database key
+        helib::Ctxt mask_entry = encrypted_log_line[search_column_no]; // Copy of the entry
         mask_entry -= query;                         // Calculate the difference
         mask_entry.power(params.p - 1);              // Fermat's little theorem
         mask_entry.negate();                         // Negate the ciphertext

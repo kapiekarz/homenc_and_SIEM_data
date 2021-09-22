@@ -33,7 +33,7 @@ struct encrypted_data encrypt(struct helib_context ctx, std::string filename, bo
                 item[0] = log_item.integrer_entry;
             } 
             if(log_item.type == 's') { 
-                for (long i = 0; i < 100; ++i) {
+                for (long i = 0; i < log_item.text_entry.length(); ++i) {
                     item.at(i) = log_item.text_entry[i];
                 }
             }
